@@ -7,6 +7,10 @@
 //
 
 #import "GuideAppDelegate.h"
+#import "AgendaViewController.h"
+#import "Location.h"
+#import <QuartzCore/QuartzCore.h>
+
 
 @implementation GuideAppDelegate
 
@@ -14,14 +18,65 @@
 @synthesize managedObjectContext = __managedObjectContext;
 @synthesize managedObjectModel = __managedObjectModel;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
+@synthesize root = _root;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];
+    // Set status bar style
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:YES];
+    
+    // Set the background image for *all* UINavigationItems
+    UIImage *buttonBack30 = [[UIImage imageNamed:@"NewBackButton"] 
+                             resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:buttonBack30 forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    
+    UIImage *button30 = [[UIImage imageNamed:@"NewBarButton"] 
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)];
+    [[UIBarButtonItem appearance] setBackgroundImage:button30 forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    
+    UIImage *navImage = [UIImage imageNamed:@"NewNavBar4"];
+    [[UINavigationBar appearance] setBackgroundImage:navImage forBarMetrics:UIBarMetricsDefault];
+    
+    [[UITabBar appearance] setBackgroundImage:[UIImage imageNamed:@"NewTabBarV3"]];
+    [[UITabBar appearance] setSelectionIndicatorImage:[[UIImage imageNamed:@"NewTabBarSelected"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 5)]];
+
+    
+    // Test data
+    
+    Location *fgh = [[Location alloc] init];
+    fgh.name = @"Featheringill Hall";
+    fgh.imagePath = @"blah";
+    fgh.category = @"Classroom Building";
+    
+    Location *myHouse = [[Location alloc] init];
+    myHouse.name = @"My House";
+    myHouse.category = @"Residence";
+    
+    
+    NSArray *places = [[NSArray alloc] initWithObjects:fgh, myHouse, nil];
+    
+    
+    self.root = (UITabBarController *)self.window.rootViewController;
+    self.root.view.clipsToBounds = YES;
+    
+    UIButton *guideButton = [[UIButton alloc] initWithFrame:CGRectMake(128, 419, 64, 60)];
+    UIImageView *guideButtonImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"103-map"]];
+    guideButtonImage.frame = guideButton.frame;
+    [guideButton addSubview:guideButtonImage];
+    
+    [guideButton addTarget:self action:@selector(guidePressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    guideButton.backgroundColor = [UIColor colorWithRed:1 green:0.906 blue:0.302 alpha:1] /*#ffe74d*/;
+    [self.root.view addSubview:guideButton];
+    
+    AgendaViewController *avc = [[[self.root.viewControllers objectAtIndex:0] viewControllers] objectAtIndex:0];
+    avc.agenda = [places mutableCopy];
+    
     return YES;
+}
+
+- (IBAction)guidePressed:(id)sender {
+    [self.root performSegueWithIdentifier:@"guidePressed" sender:self];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
