@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <ZXingWidgetController.h>
+#import "RootViewController.h"
 
 @interface GuideAppDelegate : UIResponder <UIApplicationDelegate>
 
@@ -15,6 +17,7 @@
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (strong, nonatomic) RootViewController *root;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
